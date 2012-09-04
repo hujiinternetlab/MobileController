@@ -685,29 +685,3 @@ var MCController = (function() {
 	
 	return(exports);
 })();
-
-
-
-/*setServer("10.0.0.8", 8081);
-startController(0, jo, "nafi");
-
-function jo(status, errMsg) {
-	if (status) {
-		handleData(dataReceive);
-		handlePrivateData(0, dataFromSelf)
-		alert("success");
-		sendControllerInput(3, "custom", {msg: "hello from user " + userID});
-		sendPrivateData(3, {msg: "message to myself"});
-		joystick(5);
-	}else{
-		alert(errMsg);
-	}
-}
-
-function dataReceive(dataEvent) {
-	alert(dataEvent.msg);
-}
-
-function dataFromSelf(data) {
-	alert("you got a message from yourself: " + data.msg);
-}*/

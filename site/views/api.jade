@@ -71,9 +71,9 @@ block content
                 p.
                     Sets the address and port of the Mobile Controller server to use in all subsequent function calls.
                 div.code.
-                    var s = require('burgers-server');
-                    s.startServer(8080, function() {
-                       console.log(\"Mobile Controller server started, listening on 8080\");
+                    var mcserver = require('mc-server');
+                    mcserver.startServer(8081, function() {
+                       console.log(\"Mobile Controller server started, listening on 8081\");
                     });      
 
         div#Client.section-header Client
@@ -84,10 +84,10 @@ block content
                 p.
                     Sets the address and port of the Mobile Controller server to use in all subsequent function calls.
                 div.code.
-                    Client.setServer(\"example.com\", 90210);
+                    Client.setServer("example.com", 90210);
 
             div.sub-section-header#Client-openRoom
-                |Client.openRoom(connection, join, disconnection [, userLimit [, password]])
+                | Client.openRoom(connection, join, disconnection [, userLimit [, password]])
             div.sub-section
                 p.
                     Creates a new room in the server with maximum <code>userLimit</code> users and <code>password</code> for password.

@@ -14,7 +14,7 @@ var MCClient = (function() {
 	function Room(websocket) {
 		this.id = 0;
 		this.webSocket = websocket;
-		this.disconnectFunc = function(userID) {};
+		this.disconnectFunc;
 	}
 
 	// Gets the address of the server that communicate between the client and the controllers.
@@ -32,19 +32,41 @@ var MCClient = (function() {
 	}
 
 	// Opens a new room at the server and then calls the given callback function.
-	// userLimit - limit on number of users (zero means unlimited number of users)
+	// userLimit - (optional) limit on number of users (zero means unlimited number of users)
+	// existingRoomCode - (optional) add a code to join an existing room on the server. (this code is given in the connection callback)
 	// password - (optional) secret password required for joining the room
-	// connection(roomID) callback: connection callback function that OpenRoom function calls after opening a new room
+	// connection(roomID, roomCode) callback: connection callback function that OpenRoom function calls after opening a new room
 	// roomID - the room ID hash number that controllers will join or undefined if connection failed.
+	// roomCode - the unique code for this room on this server that can be used for other clients to join the same room
 	// join(userID, roomID) callback: join callback function that OpenRoom function calls after a new controller connection
 	// userID - user unique ID
 	// roomID - the room ID that the user joined
 	// disconnection(roomID) callback: this function is called when connection between the client and the server fails
 	// roomID - the room that was closed
-	function openRoom(connection, join, disconnection, userLimit, password) {
+	function openRoom(connection, join, disconnection, userLimit, existingRoomCode, password) {
 		userLimit = userLimit || 0;
-		
+		existingRoomCode = existingRoomCode || "";
 		// check if the parameters are legal
+		if (typeof(userLimit) !== "number") {
+			if (debug) {
+				console.log("userLimit parameter must be a number");
+			}
+			return false;
+		}
+		if (userLimit < 0) {
+			if (debug) {
+				console.log("userLimit parameter must a non negative number");
+			}
+			return false;
+		}
+		
+		if (typeof(existingRoomCode) !== "string") {
+			if (debug) {
+				console.log("existingRoomCode parameter must a string");
+			}
+			return false;
+		}
+		
 		if (typeof(connection) !== "function" || typeof(join) !== "function" || typeof(disconnection) !== "function") {
 			return false
 		}
@@ -54,6 +76,7 @@ var MCClient = (function() {
 			}
 		}
 	
+		// check if websocket is available on the browser
 		if ("WebSocket" in window) {
 			var newRoom = new Room(new WebSocket("ws://"+ serverIPAddr + ":" + serverPort, "echo-protocol"));
 			
@@ -61,10 +84,12 @@ var MCClient = (function() {
 				var openRoomObj = {};
 				openRoomObj.type = "openRoom";
 				openRoomObj.userLimit = userLimit;
+				if (existingRoomCode !== "") {
+					openRoomObj.roomCode = existingRoomCode;
+				}
 				if (password !== undefined) {
 					openRoomObj.password = password;	
 				}
-				// Web Socket is connected, send data using send()
 				newRoom.webSocket.send(JSON.stringify(openRoomObj));
 			};
 			
@@ -75,7 +100,11 @@ var MCClient = (function() {
 					allRooms[roomCount] = newRoom;
 					allRooms[roomCount].id = roomCount;
 					roomCount++;
-					connection(allRooms[roomCount-1].id);
+					if (existingRoomCode !== "") {
+						connection(allRooms[roomCount-1].id, existingRoomCode);
+					} else {
+						connection(allRooms[roomCount-1].id, msgObj.roomCode);
+					}
 				}else if (msgObj.type === "controllerJoined") {
 					join(msgObj.userID, newRoom.id);
 				}else if (msgObj.type === "button") {
@@ -88,7 +117,7 @@ var MCClient = (function() {
 						buttonsCallbacks['all'](inputEvent);
 					}
 				}else if (msgObj.type === "userLeft") {
-					if (allRooms[newRoom.id] !== undefined) {
+					if (newRoom.disconnectFunc !== undefined) {
 						newRoom.disconnectFunc(msgObj.userID);
 					} else if (allRooms['all'] !== undefined) {
 						allRooms['all'].disconnectFunc(msgObj.userID);
@@ -107,21 +136,21 @@ var MCClient = (function() {
 				disconnection(newRoom.id);
 			};
 		} else {
-			return false;
 			// The browser doesn't support WebSocket
 			if (debug) {
 				console.log("WebSocket NOT supported by your Browser!");
 			}
+			return false;
 		}
 		return true;
 	}
 
-	// Sets a callback function for when data is received from a user
+	// Sets a callback function for when data is received from a user.
 	// buttonEventFunc(inputEvent) callback function that occurs when a button is triggered
 	// inputEvent:
-	// buttonID - the button ID
-	// buttonType - the button type
-	// buttonData/State - the button data
+	// id - the button/message ID
+	// msgType - the type of the input
+	// data - the input data
 	// userID - register this callback for this specific user number
 	// When no userID is given, the event is called for all users
 	function handleUserInput(buttonEventFunc, userID) {
@@ -138,13 +167,13 @@ var MCClient = (function() {
 	}
 	
 	// Sets a callback function for when data is received from a user from a specific room.
+	// When no roomID is given, the event is called for all rooms.
 	// buttonEventFunc(inputEvent) callback function that occurs when a button is triggered
 	// inputEvent:
-	// buttonID - the button ID
-	// buttonType - the button type
-	// buttonData/State - the button data
+	// id - the button/message ID
+	// msgType - the type of the input
+	// data - the input data
 	// roomID - register this callback for this specific room
-	// When no roomID is given, the event is called for all rooms
 	function handleRoomInput(buttonEventFunc, roomID) {
 		if (typeof(buttonEventFunc) !== "function" || typeof(roomID) !== "number") {
 			return false;
@@ -174,7 +203,7 @@ var MCClient = (function() {
 		return true;
 	}
 
-	// sends data to the userID's conroller
+	// Sends data to the userID's conroller
 	// roomID - the room where the user is
 	// userID - send the data to the user with this user id
 	// data - JSON object to send to the user
@@ -1916,13 +1945,14 @@ var MCClient = (function() {
 			img += '/>';
 
 			return img;
-		}; 
+		};
+
 		//---------------------------------------------------------------------
 		// returns qrcode function.
+
 		return qrcode;
-	}(); // qrcode
+	}();
 
 	
-	return exports;
+	return(exports);
 })();
-
