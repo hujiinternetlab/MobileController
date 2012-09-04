@@ -1,0 +1,12 @@
+extends ../layout
+
+block styles
+	link(rel="stylesheet", href="/styles/evader.css")
+
+block scripts
+	script(data-main="scripts/evader/app.js", src="scripts/evader/require.js")
+
+block content
+	div#content
+		div#debug
+		div#game_viewport		

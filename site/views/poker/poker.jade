@@ -1,0 +1,36 @@
+extends ../layout
+
+block styles
+	link(rel="stylesheet", href="/styles/poker.css")
+
+block scripts
+	script(type="text/javascript", src="/scripts/poker/jquery-1.7.1.min.js")
+	script(type="text/javascript", src="/scripts/poker/qrcode.js")
+	script(type="text/javascript", src="/scripts/mc/mc-client.js")
+	script(type="text/javascript", src="/scripts/poker/poker.js")
+	script(type="text/javascript", src="/scripts/poker/table.js")
+	script(type="text/javascript", src="/scripts/poker/handRanker.js")
+	
+
+block content
+	div#content.
+			<div id="pokerArea">
+				<h1>Mobile Poker</h1>
+				<img src="/Resources/pokerTable.png" />
+				<img src="/Resources/dealer.png" id="dealerChip" />
+				<div id="potDiv">
+					<img src="/Resources/chips.png" id="potChips" />
+					<div id="potMoney">$0</div>
+				</div>
+				<script>addDivs()</script><br />
+				<input id="startGameBtn" type="button" value="Start Game" onclick="startGameButton();" />
+			</div>
+			<div id="settingDiv">
+			</div>
+			<div id="settingCenterDiv">
+				Number of players: <input class="settingInput" type='number' id='playersNumberSetting' value='8' /><br />
+				Small Blind: <input class="settingInput" type='number' id='smallBlindSetting' value='10' /><br />
+				Big Blind: <input class="settingInput" type='number' id='bigBlindSetting' value='20' /><br />
+				Buy in: <input class="settingInput" type='number' id='buyInSetting' value='200' /><br />
+				<input id="startPokerBtn" type="button" value="Start" onclick="startPoker();" />
+			</div>

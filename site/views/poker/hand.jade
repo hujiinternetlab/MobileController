@@ -1,0 +1,26 @@
+doctype 5
+html.
+    <head>
+        <link rel="stylesheet" type="text/css" href="/styles/poker_hand.css" />
+        <script type="text/javascript" src="/scripts/poker/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="/scripts/mc/mc-controller.js"></script>
+        <script type="text/javascript" src="/scripts/poker/controllerHand.js"></script>
+    </head>
+     
+    <body>
+        <div class="fullWidth">
+            <div id="chooserDiv">
+                <img src="/Resources/1.png" class='profileImg' onclick="imgChoose(1)" id="pImage1" />
+                <img src="/Resources/2.png" class='profileImg' onclick="imgChoose(2)" id="pImage2" />
+                <img src="/Resources/3.png" class='profileImg' onclick="imgChoose(3)" id="pImage3" />
+                <div id="errorMsg">Click on the image you want to select</div>
+                <div id="nameInputDiv">Your name: <input type="text" id="nameInput" /></div>
+                <button id="startBtn">Enter the game</button>
+            </div>
+            <div id="gameDiv">
+                <h1 id="caption"></h1>
+                <div id="cardsArea"></div>
+                <div id="buttonsArea"></div>
+            </div>
+        </div>
+    </body>

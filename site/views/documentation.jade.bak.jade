@@ -1,0 +1,104 @@
+extends layout
+
+block styles
+	link(rel="stylesheet", href="styles/documentation.css")
+
+
+block content
+	div#content
+		h1 Documentation
+
+		div.section-header Table of Contents
+		div.section
+			ul
+				li Taxonomy
+				li Tutorial
+				li Server
+				li Client
+				li Controller
+
+		div.section-header#Taxonomy Taxonomy
+		div.section
+			ul
+				li#room-definition Room
+				li#ticket-definition Ticket
+		div.section-header#Tutorial Tutorial
+		div.section
+			p
+				|blablabla
+
+		div.section-header#Server Server
+		div.section 
+			div.sub-section-header 
+					|Server.startServer(port [, listen])
+			div.sub-section 
+				p
+					|Start a Burgers websockets server listening on 'port'.
+					|Call 'listen' function when server starts listening.
+					div.code
+						|var s = require('burgers-server');
+						|s.startServer(8080, function() {
+						|	console.log("Burgers server started, listening on 8080");
+						|});
+
+		div.section-header#Client Client
+		div.section 
+			div.sub-section-header Client.setServer(address, port)
+			div.sub-section 
+				p
+					|Sets the address and port of the Burgers server to use in all subsequent function calls.
+				div.code
+					| Client.setServer("192.168.0.1", 8080);
+			div.sub-section-header Client.openRoom(connection, join [, userLimit [, password]])
+			div.sub-section 
+				p
+					|Creates a new room in the server with maximum 'userLimit' users and 'password' for password.
+					|Calls 'connection' with the room ID as the first parameter onces a connection successful 
+					|connection has been established. Calls join with the user ID once a controller joins the room.
+				div.code
+					|var roomID;
+					|var connection = function(roomID) {
+					|	console.log("Created a new room " + roomID + " in the server.");
+					|};
+					|
+					|var j = function(userID) {
+					|	console.log("Controller " + userID + " has joined the room " + roomID);	
+					|};
+					|Client.openRoom(c, j);
+			div.sub-section-header Client.handleControllerInput(button [, userID])
+			div.sub-section 
+				p
+					|Assigns a controller input handler function 'button'. If 'userID' specified,
+					|'button' will be called only on input from 'userID' controller.
+					//- expand on parameter passed to button
+			div.sub-section-header Client.handleDisconnection(disconnect [, roomID])
+			div.sub-section 
+				p				
+					|On user disconnection from the server, 'disconnect' is called. If 'roomID' is specified,
+					|'disconnect' will be called only on disconnection from 'roomID' room.
+					//- expand on parameter passed to disconnect
+			div.sub-section-header Client.sendData(roomID, userID, data)
+			div.sub-section 
+				p
+					|Sends custom data to 'userID' in 'roomID'. 'data' can be any javascript object.
+			div.sub-section-header Client.broadcastData(data [, roomID])
+			div.sub-section 
+				p
+					|Send custom data to all controllers. If 'roomID' is specified broadcasts to all controllers only
+					|on that room.
+			div.sub-section-header Client.getTicket(roomID, receiveTicket)
+			div.sub-section 
+				p
+					|Request a 
+					a(href="#ticket-definition") ticket 
+					|from the server. Calls 'receiveTicket' with the ticket string as the parameter. 
+			div.sub-section-header Client.getQRCode(url)
+			div.sub-section 
+				p
+					|Returns a string of an image tag with the QRCode.
+			div.sub-section-header Client.closeRoom(roomID, close)
+			div.sub-section
+				p
+					|Closes the room in the server. Calls 'room' function once the room was closed in the server.
+		div.section-header Controller
+		div.section 

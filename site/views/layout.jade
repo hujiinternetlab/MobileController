@@ -1,0 +1,27 @@
+doctype
+html
+	head	
+		title=title
+		link(rel="stylesheet", href="styles/style.css")
+		block styles
+		block scripts
+	body
+		block header
+			div#header
+				// navigation bar goes here
+				ul.vertical-list
+					li: a(href="/") Home
+					li: a(href="#") Download
+					li: a(href="/gettingstarted") Getting Started
+					li: a(href="/api") API
+					li: a(href="/evader") Play Space Evader
+					li: a(href="/poker") Play Poker
+		block content
+		block footer
+			div#footer
+				// contact information and credits goes here
+				ul.vertical-list
+					li
+						a contact us
+					li
+						|all the code is open, and all the rights reserved

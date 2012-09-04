@@ -1,0 +1,43 @@
+extends layout
+
+block styles
+    link(rel="stylesheet", href="styles/documentation.css")
+
+block content
+    div#content
+        h1 Documentation
+        div.section-header Table of Contents
+        div.section
+            ul
+                li: a(href="#Tutorial") Tutorial
+                li: a(href="#Taxonomy") Taxonomy
+                each section, sectionName in docData
+                    li: a(href="##{sectionName}") #{sectionName}
+        div#Tutorial.section-header Tutorial
+        include tutorial
+        div#Taxonomy.section-header Taxonomy
+        div.section
+            dl
+                each definition, item in taxonomy
+                    dt #{item}
+                    dd #{definition}
+        div.section
+        each section, sectionName in docData
+            //-| !{createHeader(sectionName, "section-header")}
+            div(id="#{sectionName}",class="section-header") #{sectionName}
+            div.section
+                each subSection, ssectionName in section
+                    div(id="#{ssectionName}",class="sub-section-header") #{ssectionName}
+                    div.sub-section
+                        - if (typeof(subSection.description) === "string") {
+                        p
+                            | !{subSection.description}
+                        - } else {
+                        each para in subSection.description
+                            p
+                                | !{para}
+                        - }
+                        - if (subSection.code)
+                            div.code
+                                each line in subSection.code
+                                    div=line

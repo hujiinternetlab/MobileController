@@ -1,0 +1,34 @@
+{
+  "name": "mc-server",
+  "version": "0.0.1",
+  "description": "The server side of the Mobile Controller library.",
+  "main": "mc-server.js",
+
+  "author": "",
+  "contributors": [
+    {
+      "name": "Jonathan Sadan",
+      "email": "sadanjon at gmail"
+    },
+    {
+      "name": "Adar Kaisar",
+      "email": "adark3 at gmail"
+    },
+    {
+      "name": "Oren Givon",
+      "email": "nafinafi5 at gmail"
+    }
+  ],
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+  "dependencies": {
+    "websocket": "*",
+    "node-uuid": "*"
+  },
+
+  "repository": "",
+  "license": "BSD"
+}

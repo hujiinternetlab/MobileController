@@ -1,0 +1,22 @@
+{
+  "name": "mobile-controller-site",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "express": "3.0.0rc3",
+    "ejs": "*",
+    "stylus": "*",
+    "jade": "*",
+    "mc-server": "*"
+  },
+
+  "engines": {
+     "node": "*",
+     "npm": "*"
+  },
+
+  "license": ""
+}

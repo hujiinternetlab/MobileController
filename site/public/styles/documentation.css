@@ -1,0 +1,61 @@
+div.section {
+	padding-left: 20px;	
+	font-family: Georgia, FreeSerif, Times, serif;
+	width: 800px;	
+}
+
+div.section-header {
+	font-size: 20px;
+	font-weight: bold;
+	font-family: sans-serif;
+	margin: 20px 0;
+}
+
+div.sub-section {	
+	padding-left: 20px;
+	border-width: 2px;
+	margin-bottom: 10px;
+}
+
+div.code {
+	font-family: monospace;
+	font-size: 11px;
+	white-space: pre;
+
+	background-color: #eee;
+	border: 1px solid #999;
+	border-left-width: 3px;
+	padding: 10px;
+}
+
+div.sub-section-header {
+	font-weight: bold;
+	font-family: sans-serif;
+	margin: 10px 0;
+
+}
+
+ul.contents-table {
+	list-style-type: none;	
+}
+
+ul.contents-table li {
+	margin: 5px 0;
+}
+
+/* Definition Lists */
+dt {
+	float: left;
+	clear: left;
+	text-align: right;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	width: 100px;	
+	font-weight: bold;
+}
+
+dd {
+	margin-bottom: 10px;
+	/*font-family: Georgia, FreeSerif, Times, serif;*/
+}
+

@@ -1,0 +1,227 @@
+#content {
+    
+    font-size: 16px;
+}
+
+h1 {
+	color: #FFFFFF;
+	font-size: 4em;
+	text-align: center;
+}
+
+h4 {
+	font-size: 1.5em;
+	margin: 0px;
+}
+
+#pokerArea {
+	background-color: #000032;
+	text-align: center;
+}
+
+.qr {
+	position: absolute;
+}
+
+.cardDiv {
+	position: absolute;
+	top: 360px;
+}
+
+.cardImg {
+	width: 70px;
+	height: 105px;
+}
+
+.playerImage {
+	width: 100px;
+	height: 100px;
+	position: absolute;
+	top: 0px;
+	left: 0;
+}
+
+.statsDiv {
+	color: #FFFFFF;
+	position: absolute;
+	white-space: nowrap;
+	margin: 0px;
+}
+
+.lowerStats {
+	position: absolute;
+	top: 100px;
+}
+
+.upperStats {
+	position: absolute;
+	bottom: 0px;
+}
+
+.playerActionDiv {
+	position: absolute;
+	top: 10px;
+	left: 105px;
+	font-size: 2em;
+	color: #FFFFFF;
+	font-weight: bold;
+	white-space: nowrap;
+	background-color: #33CC33;
+}
+
+.playerBetSum {
+	position: absolute;
+	top: 70px;
+	left: 105px;
+	font-size: 0.9em;
+	color: #FFFFFF;
+	font-weight: bold;
+	white-space: nowrap;
+	background-color: #11AA11;
+}
+
+.playerCardsDiv {
+	position: absolute;
+	top: 35px;
+	left: 0px;
+	width: 100px;
+}
+
+.playerCardImg {
+	width: 50px;
+	height: 65px;
+}
+
+.selectedPlayer {
+    border: 3px solid #CC0000;
+}
+
+.settingError {
+    border: 2px solid #CC0000;
+}
+
+.settingInput {
+	font-size: 1em;
+	text-align: center;
+	width: 90%;
+	margin-bottom: 20px;
+}
+
+.playerCardCombination {
+	position: absolute;
+	top: 15px;
+	left: 0px;
+	font-size: 1em;
+	width: 100px;
+	background-color: #33CC33;
+	color: #FFFFFF;
+}
+
+#settingDiv {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	right: 0;
+	top: 0;
+	background-color: #FFFFFF;
+	opacity: 0.75;
+}
+
+#settingCenterDiv {
+	position: absolute;
+	background-color: #111111;
+	text-align: center;
+	color: #FFFFFF;
+	font-size: 1.5em;
+	font-weight: bold;
+	padding: 10px;
+	border: 4px solid white;
+}
+
+#startPokerBtn {
+	width: 400px;
+	height: 80px;
+	opacity: 1;
+	font-size: 2em;
+	font-weight: bold;
+}
+
+#potDiv {
+	position: absolute;
+	right: 550px;
+	top: 300px;
+}
+
+#potChips {
+	position: absolute;
+	right: 0px;
+	top: 0px;
+}
+
+#potMoney {
+	position: absolute;
+	top: 20px;
+	left: 10px;
+	font-size: 1.5em;
+	color: #FFFFFF;
+	font-weight: bold;
+	background-color: #33CC33;
+	border: 2px solid white;
+	width: 150px;
+}
+
+#dealerChip {
+	position: absolute;
+	width: 30px;
+	height: 27px;
+}
+
+#startGameBtn {
+	width: 400px;
+	height: 80px;
+	margin-top: 30px;
+	font-size: 2em;
+	background-color: #006600;
+	color: #FFFFFF;
+}
+
+#qr0 {
+	top: 170px;
+	left: 425px;
+}
+
+#qr1 {
+	top: 180px;
+	left: 640px;
+}
+
+#qr2 {
+	top: 350px;
+	left: 810px;
+}
+
+#qr3 {
+	top: 510px;
+	left: 670px;
+}
+
+#qr4 {
+	top: 540px;
+	left: 430px;
+}
+
+#qr5 {
+	top: 520px;
+	left: 190px;
+}
+
+#qr6 {
+	top: 375px;
+	left: 40px;
+}
+
+#qr7 {
+	top: 200px;
+	left: 190px;
+}
