@@ -22,6 +22,7 @@ Table.prototype.addPlayer = function(playerSeat, playerID, playerName, playerPic
 	this.players[playerSeat].playerPic = playerPic;
 	this.players[playerSeat].bet = 0;
 	this.players[playerSeat].isFolded = false;
+	// sends data to controller
 	MCClient.sendData(savedRoomID, playerID, {action : "buyIn", money: this.buyIn});
 };
 
@@ -33,7 +34,9 @@ Table.prototype.removePlayer = function(playerID, playerSeat) {
 		changePlayerBet(playerSeat, 0);
 		chooseAction(playerSeat, "");
 		hidePlayerCards(playerSeat);
+		// sends data to controller
 		MCClient.sendData(savedRoomID, playerID, {action : "out"});
+		// disconnects user from the room
 		MCClient.disconnectUser(savedRoomID, playerID);
 	} else {
 		for (var i = 0; i < this.numOfPlayers; ++i) {
@@ -55,6 +58,7 @@ Table.prototype.removePlayer = function(playerID, playerSeat) {
 						var playerSeat = stillInGmae[j];
 						this.players[playerSeat].money += this.players[playerSeat].bet;
 						updateMoney(playerSeat , this.players[playerSeat].money);
+						// sends data to controller
 						MCClient.sendData(savedRoomID, this.players[playerSeat].playerID, {action : "buyIn", money : this.players[playerSeat].money});
 					}
 					kickPlayers(this);
@@ -101,6 +105,7 @@ Table.prototype.startGame = function() {
 				this.players[i].cards[1] = this.deck.pop();
 				console.log("sending cards to player " + i);
 				chooseAction(i, "");
+				// sends data to controller
 				MCClient.sendData(savedRoomID, this.players[i].playerID, {action : "deal", cards : [[this.players[i].cards[0]],[this.players[i].cards[1]]]});
 			}
 		}
@@ -108,6 +113,7 @@ Table.prototype.startGame = function() {
 		this.dealer = getNextPlayerPos(this.players, this.numOfPlayers, this.dealer, true);
 		moveDealerChip(this.dealer);
 		console.log("the dealer is player " + this.dealer);
+		// sends data to controller
 		MCClient.sendData(savedRoomID, this.players[this.dealer].playerID, {action : "dealer"});
 		this.tableCards = new Array(5);
 		this.tableCards[0] = this.deck.pop();
@@ -136,6 +142,7 @@ Table.prototype.startGame = function() {
 		}
 		updateMoney(this.small , this.players[this.small].money);
 		changePlayerBet(this.small, this.players[this.small].bet);
+		// sends data to controller
 		MCClient.sendData(savedRoomID, this.players[this.small].playerID, {action : "small", smallBlind : this.smallBlind});
 		if (this.players[this.big].money > this.bigBlind) {
 			this.players[this.big].money -= this.bigBlind;
@@ -149,6 +156,7 @@ Table.prototype.startGame = function() {
 		}
 		updateMoney(this.big , this.players[this.big].money);
 		changePlayerBet(this.big, this.players[this.big].bet);
+		// sends data to controller
 		MCClient.sendData(savedRoomID, this.players[this.big].playerID, {action : "big", bigBlind : this.bigBlind});
 		console.log("money in the pot: " + this.pot);
 		changePot(this.pot);
@@ -160,6 +168,7 @@ Table.prototype.startGame = function() {
 		chooseTurn(this.next);
 		this.nextPlayerID = this.players[this.next].playerID;
 		this.lastBet = this.bigBlind;
+		// sends data to controller
 		MCClient.sendData(savedRoomID, this.nextPlayerID, {action : "turn", yourBet: this.players[this.next].bet, lastBet : this.lastBet, lastRaise : this.raise});
 	} 
 }
@@ -275,9 +284,11 @@ Table.prototype.progress = function(playerID, playerMove, data) {
 			chooseAction(winnerPos, "Winner!");
 			this.players[winnerPos].money += this.pot;
 			changePot(this.pot);
+			// sends data to controller
 			MCClient.sendData(savedRoomID, this.players[winnerPos].playerID, {action : "winner", money : this.pot});
 			for (var i = 0; i < this.numOfPlayers; ++i) {
 				if (this.players[i] !== undefined && i !== winnerPos && this.players[i].inGame) {
+					// sends data to controller
 					MCClient.sendData(savedRoomID, this.players[i].playerID, {action : "loser"});
 					chooseAction(i, "Loser!");
 				}
@@ -347,6 +358,7 @@ Table.prototype.progress = function(playerID, playerMove, data) {
 								changePot(this.pot);
 								this.players[i].bet -= (this.players[i].bet - beforeHighest);
 								updateMoney(i , this.players[i].money);
+								// sends data to controller
 								MCClient.sendData(savedRoomID, this.players[i].playerID, {action : "buyIn", money : this.players[i].money});
 								break;
 							}
@@ -384,6 +396,7 @@ Table.prototype.progress = function(playerID, playerMove, data) {
 							chooseAction(playerSeat, "Winner!");
 							showPlayerCards(playerSeat, this.players[playerSeat].cards[0], this.players[playerSeat].cards[1]);
 							this.pot -= Math.round(moneyFromPot / winnersResult[i].length);
+							// sends data to controller
 							MCClient.sendData(savedRoomID, this.players[playerSeat].playerID, {action : "winner", money : Math.round(moneyFromPot / winnersResult[i].length)});
 						}		
 						if (this.pot <= 0) {
@@ -401,6 +414,7 @@ Table.prototype.progress = function(playerID, playerMove, data) {
 								}
 							}
 							if (isLoser) {
+								// sends data to controller
 								MCClient.sendData(savedRoomID, this.players[i].playerID, {action : "loser"});
 								console.log("player " + i + " lost!");
 								chooseAction(i, "Loser!");
@@ -432,6 +446,7 @@ Table.prototype.progress = function(playerID, playerMove, data) {
 					console.log("the next player is player " + this.next);
 					chooseTurn(this.next);
 					this.nextPlayerID = this.players[this.next].playerID;
+					// sends data to controller
 					MCClient.sendData(savedRoomID, this.nextPlayerID, {action : "turn", yourBet: this.players[this.next].bet, lastBet : this.lastBet, lastRaise : this.raise});
 					return;
 				} else if (this.roundNum == 1) {
@@ -450,6 +465,7 @@ Table.prototype.progress = function(playerID, playerMove, data) {
 					showCard(0, this.tableCards[0]);
 					showCard(1, this.tableCards[1]);
 					showCard(2, this.tableCards[2]);
+					// sends data to controller
 					MCClient.sendData(savedRoomID, this.nextPlayerID, {action : "turn", yourBet: this.players[this.next].bet, lastBet : this.lastBet, lastRaise : this.raise});
 					return;
 				}
@@ -460,6 +476,7 @@ Table.prototype.progress = function(playerID, playerMove, data) {
 		this.nextPlayerID = this.players[this.next].playerID;
 		console.log("the next player is player " + this.next);
 		chooseTurn(this.next);
+		// sends data to controller
 		MCClient.sendData(savedRoomID, this.nextPlayerID, {action : "turn", yourBet: this.players[this.next].bet, lastBet : this.lastBet, lastRaise : this.raise});
 	}
 }

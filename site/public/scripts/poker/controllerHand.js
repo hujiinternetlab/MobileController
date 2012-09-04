@@ -8,6 +8,72 @@ var checkSound = new Audio("/Resources/check.ogg");
 var serverIP = window.location.hostname;
 var serverPort = 8081;
 
+// --------------------------------------------------------------------------------------------------------
+// ---------------------------------- Mobile Controller Setting -------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+// handlers that are needed by the controller to handle events and interactions between 
+// the client, the server and other controllers
+var connectHandlers = function() {
+	var joinFunc, dataReceive;
+
+	// builds the first screen of the controller after a connection has
+	// been established with the server
+	joinFunc = function (errMsg){
+		if (!errMsg){
+			MCController.handleData(dataReceive);
+			$('#startBtn').on('touchend', enterTheGame);
+		} else {
+			$("#errorMsg").html("There was an error connection to the game: " + errMsg);
+		}
+	}
+	
+	// receive data from the game client
+	dataReceive = function (dataEvent){
+		if (dataEvent.action === "deal") {
+			$("#card1").attr("src", "/Resources/deck/" + dataEvent.cards[0] + ".gif");
+			$("#card2").attr("src", "/Resources/deck/" + dataEvent.cards[1] + ".gif");
+		} else if (dataEvent.action === "turn") {
+			turnEvent(dataEvent);
+		} else if (dataEvent.action === "out") { 
+			$("#caption").html(playerName + ", you are out of money!");
+		} else if (dataEvent.action === "winner") {
+			playerMoney = playerMoney + parseInt(dataEvent.money);
+			$("#caption").html(playerName + ", you are the winner!<br />You won $" + dataEvent.money);
+		} else if (dataEvent.action === "loser") {
+			$("#caption").html(playerName + ", you lost this round...");
+		} else if (dataEvent.action === "buyIn") {
+			playerMoney = parseInt(dataEvent.money);
+			$("#caption").html(playerName + ", you have $" + playerMoney);
+		} else if (dataEvent.action === "small") {
+			playerMoney = playerMoney - parseInt(dataEvent.smallBlind);
+			yourTitle = " (Small blind)";
+			$("#caption").html(playerName + ", you have $" + playerMoney + yourTitle);
+		} else if (dataEvent.action === "big") {
+			playerMoney = playerMoney - parseInt(dataEvent.bigBlind);
+			yourTitle = " (Big blind)";
+			$("#caption").html(playerName + ", you have $" + playerMoney + yourTitle);
+		} else if (dataEvent.action === "dealer") {
+			yourTitle = " (Dealer)";
+			$("#caption").html(playerName + ", you have $" + playerMoney + yourTitle);
+		}
+	}
+	
+	return {joinFunc: joinFunc};
+}();
+
+// connect to the server when the document is ready
+ $(document).ready(function() {
+	MCController.setServer(serverIP, serverPort);
+	MCController.startController(connectHandlers.joinFunc, ticketUUID);
+	$('#pImage1')[0].style.borderColor = "yellow";
+	$('#pImage1')[0].style.borderWidth = "5px";
+ });
+
+// --------------------------------------------------------------------------------------------------------
+// ---------------------------------- Other game display functions ----------------------------------------
+// -------------------------------------------------------------------------------------------------------- 
+ 
 // this function is used to keep the font size of the text correct after
 // screen resize (aka flipping the phone)
 $(function() {
@@ -33,24 +99,6 @@ $(function() {
 	}).trigger('resize');
 });
 
-// connect to the server when the document is ready
- $(document).ready(function() {
-	MCController.setServer(serverIP, serverPort);
-	MCController.startController(joinFunc, ticketUUID);
-	$('#pImage1')[0].style.borderColor = "yellow";
-	$('#pImage1')[0].style.borderWidth = "5px";
- });
-
-// builds the first screen of the controller after a connection has
-// been established with the server
-function joinFunc(errMsg){
-	if (!errMsg){
-		MCController.handleData(dataReceive);
-		$('#startBtn').on('touchend', enterTheGame);
-	} else {
-		$("#errorMsg").html("There was an error connection to the game: " + errMsg);
-	}
-}
 // loads the game screen after the player chooses his name and profile picture
 function enterTheGame(event) {
 	playerName = $('#nameInput').val();
@@ -92,6 +140,7 @@ function enterTheGame(event) {
 	}	
 }
 
+// The All-in button touch handler
 function allinBtnTouch(event) {
 	$("#raiseInput").val(playerMoney - lastBet);
 	playerMoney = 0;
@@ -100,12 +149,14 @@ function allinBtnTouch(event) {
 	coinSound.play();
 }
 
+// The Check button touch handler
 function checkBtnTouch(event) {
 	disableButtons();
 	MCController.sendCustomData({action: "check"});
 	checkSound.play();
 }
 
+// The Fold button touch handler
 function foldBtnTouch(event) {
 	disableButtons();
 	$("#caption").html("FOLD");
@@ -113,6 +164,7 @@ function foldBtnTouch(event) {
 	foldSound.play();
 }
 
+// The Call button touch handler
 function callBtnTouch(event) {
 	playerMoney = playerMoney - (lastBet - yourBet);
 	disableButtons();
@@ -120,10 +172,12 @@ function callBtnTouch(event) {
 	coinSound.play();
 }
 
+// The Raise input touch handler
 function raiseInputTouch(event) {
 	$("#raiseInput").val("");	
 }
 
+// The Raise button touch handler
 function raiseBtnTouch(event) {
 	var raiseAmount = parseInt($("#raiseInput").val()); 
 	if (raiseAmount > 0 && raiseAmount >= lastRaise && raiseAmount <= (playerMoney - (lastBet - yourBet))){
@@ -168,73 +222,46 @@ function disableButtons() {
 	$("#caption").html(playerName + ", you have $" + playerMoney + yourTitle);
 }
 
-// receive data from the game client
-function dataReceive(dataEvent){
-	if (dataEvent.action === "deal") {
-		$("#card1").attr("src", "/Resources/deck/" + dataEvent.cards[0] + ".gif");
-		$("#card2").attr("src", "/Resources/deck/" + dataEvent.cards[1] + ".gif");
-	} else if (dataEvent.action === "turn") {
-		lastRaise = dataEvent.lastRaise;
-		lastBet = dataEvent.lastBet; 
-		yourBet = dataEvent.yourBet;
-		if (playerMoney === 0) {
-			MCController.sendCustomData({action: "check"});
-		} else if (lastBet === yourBet) {
-			$("#checkBtn").attr("disabled", false);
-			$("#checkBtn").on('touchend', checkBtnTouch);
-			$("#foldBtn").attr("disabled", false);
-			$("#foldBtn").on('touchend', foldBtnTouch);
-			$("#raiseBtn").attr("disabled", false);
-			$("#raiseBtn").on('touchend', raiseBtnTouch);
-			$("#allinBtn").attr("disabled", false);
-			$("#allinBtn").on('touchend', allinBtnTouch);
-			$("#raiseInput").val(lastRaise);
-			$("#raiseInput").attr("disabled", false);
-			$("#raiseInput").on('touchstart', raiseInputTouch);
-		} else if ((lastBet - yourBet) >= playerMoney) {
-			$("#callBtn").attr("disabled", false);
-			$("#callBtn").on('touchend', callBtnTouch);
-			$("#foldBtn").attr("disabled", false);
-			$("#foldBtn").on('touchend', foldBtnTouch);
-			$("#allinBtn").attr("disabled", false);
-			$("#allinBtn").on('touchend', allinBtnTouch);
-			$("#raiseInput").val(playerMoney);
-			$("#raiseInput").on('touchstart', raiseInputTouch);
-		} else {
-			$("#callBtn").attr("disabled", false);
-			$("#callBtn").on('touchend', callBtnTouch);
-			$("#foldBtn").attr("disabled", false);
-			$("#foldBtn").on('touchend', foldBtnTouch);
-			$("#raiseBtn").attr("disabled", false);
-			$("#raiseBtn").on('touchend', raiseBtnTouch);
-			$("#allinBtn").attr("disabled", false);
-			$("#allinBtn").on('touchend', allinBtnTouch);
-			$("#raiseInput").val(lastRaise);
-			$("#raiseInput").attr("disabled", false);
-			$("#raiseInput").on('touchstart', raiseInputTouch);
-		}
-
-	} else if (dataEvent.action === "out") { 
-		$("#caption").html(playerName + ", you are out of money!");
-	} else if (dataEvent.action === "winner") {
-		playerMoney = playerMoney + parseInt(dataEvent.money);
-		$("#caption").html(playerName + ", you are the winner!<br />You won $" + dataEvent.money);
-	} else if (dataEvent.action === "loser") {
-		$("#caption").html(playerName + ", you lost this round...");
-	} else if (dataEvent.action === "buyIn") {
-		playerMoney = parseInt(dataEvent.money);
-		$("#caption").html(playerName + ", you have $" + playerMoney);
-	} else if (dataEvent.action === "small") {
-		playerMoney = playerMoney - parseInt(dataEvent.smallBlind);
-		yourTitle = " (Small blind)";
-		$("#caption").html(playerName + ", you have $" + playerMoney + yourTitle);
-	} else if (dataEvent.action === "big") {
-		playerMoney = playerMoney - parseInt(dataEvent.bigBlind);
-		yourTitle = " (Big blind)";
-		$("#caption").html(playerName + ", you have $" + playerMoney + yourTitle);
-	} else if (dataEvent.action === "dealer") {
-		yourTitle = " (Dealer)";
-		$("#caption").html(playerName + ", you have $" + playerMoney + yourTitle);
+// this function, upon a new turn, decides which buttons to enable for the player
+function turnEvent(dataEvent) {
+	lastRaise = dataEvent.lastRaise;
+	lastBet = dataEvent.lastBet; 
+	yourBet = dataEvent.yourBet;
+	if (playerMoney === 0) {
+		MCController.sendCustomData({action: "check"});
+	} else if (lastBet === yourBet) {
+		$("#checkBtn").attr("disabled", false);
+		$("#checkBtn").on('touchend', checkBtnTouch);
+		$("#foldBtn").attr("disabled", false);
+		$("#foldBtn").on('touchend', foldBtnTouch);
+		$("#raiseBtn").attr("disabled", false);
+		$("#raiseBtn").on('touchend', raiseBtnTouch);
+		$("#allinBtn").attr("disabled", false);
+		$("#allinBtn").on('touchend', allinBtnTouch);
+		$("#raiseInput").val(lastRaise);
+		$("#raiseInput").attr("disabled", false);
+		$("#raiseInput").on('touchstart', raiseInputTouch);
+	} else if ((lastBet - yourBet) >= playerMoney) {
+		$("#callBtn").attr("disabled", false);
+		$("#callBtn").on('touchend', callBtnTouch);
+		$("#foldBtn").attr("disabled", false);
+		$("#foldBtn").on('touchend', foldBtnTouch);
+		$("#allinBtn").attr("disabled", false);
+		$("#allinBtn").on('touchend', allinBtnTouch);
+		$("#raiseInput").val(playerMoney);
+		$("#raiseInput").on('touchstart', raiseInputTouch);
+	} else {
+		$("#callBtn").attr("disabled", false);
+		$("#callBtn").on('touchend', callBtnTouch);
+		$("#foldBtn").attr("disabled", false);
+		$("#foldBtn").on('touchend', foldBtnTouch);
+		$("#raiseBtn").attr("disabled", false);
+		$("#raiseBtn").on('touchend', raiseBtnTouch);
+		$("#allinBtn").attr("disabled", false);
+		$("#allinBtn").on('touchend', allinBtnTouch);
+		$("#raiseInput").val(lastRaise);
+		$("#raiseInput").attr("disabled", false);
+		$("#raiseInput").on('touchstart', raiseInputTouch);
 	}
 }
 
