@@ -1,5 +1,5 @@
-Mobile Controller
-=================
+Mobile Controller Library
+=========================
 
 Welcome
 --------
@@ -13,6 +13,10 @@ The Mobile Controller library makes it easier on you to develop web based games 
 How Does It Work?
 -----------------
 The Mobile Controller library relies on the HTML5 technology Websockets for communication between your web game and the player's phone. With a running Websockets server, the game's web page is able to receive controller input that is sent from the phone through the server and then to the game's web page. The controller is just another web page, so your game's controller can look and behave as you want it to.
+
+Where can I get further information?
+------------------------------------
+Unfortunatly, currently Mobile Controller doesn't have a domain were it can hold all its examples. Soon a documentaiton only version will be uploaded to github. In the meantime, go to the repository at [https://github.com/sadanjon/mobilecontroller](https://github.com/sadanjon/mobilecontroller), under the site subdirectory, you'll find the instructions how to run the site on your computer.
 
 Credits
 -------
