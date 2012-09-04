@@ -12,8 +12,8 @@ Can I run the site on my computer?
 Sure you can, here's how:
 
 * Clone the repository.
-* Type:
-	`$ npm install  
-	$ node app`
+* Type:  
+	$ npm install  
+	$ node app
 
 
