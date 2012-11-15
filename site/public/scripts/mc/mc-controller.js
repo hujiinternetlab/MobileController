@@ -321,7 +321,7 @@ var MCController = (function() {
 	Button = function(/*...*/) {
 		var size, buttonDiv;
 		if (arguments.length === 2 && typeof(arguments[0]) === 'number' && 
-									  arguemnts[0] instanceof HTMLDivElement) {
+									  arguments[1] instanceof HTMLDivElement) {
 			this.id = arguments[0];
 			buttonDiv = arguments[1];
 		} else {
@@ -463,7 +463,7 @@ var MCController = (function() {
 			stickDiv = arguments[2];
 
 			if (!Joystick._isChildOf(baseDiv, stickDiv)) {
-				this.baseDiv.appendChild(stickDiv);
+				baseDiv.appendChild(stickDiv);
 			}
 		} else {
 			if (arguments.length === 1 && typeof(arguments[0]) === 'number') {

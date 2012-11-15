@@ -79,9 +79,12 @@ block content
                     are capable of communicating custom data, and also privately between themselves without notifiying the client.
 
         div.section-header#mc-library-limitations Mobile Controller Library Limitations
-        div.section
+        div.section            
             p.
-                (TODO: latency, mobile  and desktop browsers capabilities)
+                Because user input is carried over the network, network latency is a factor. If Mobile Controller's server isn't under 200ms away from
+                the phone and game server, response latency is noticable.
+            p.
+                Currently, Mobile Controller has been tested only on Android devices. The default Android browser is missing Accelerometer and Gyroscope support. Installing the Firefox browser solves this issue. Also, mobile browsers cannot suppress screen rotation when the user moves her controller. Locking the screen is in some cases recommended, but this is a game specific issue.
         div.section-header#an-example An Example
         div.section
             p.

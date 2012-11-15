@@ -59,7 +59,10 @@ define(['three'], function(THREE) {
 	    exports.lifeImage.src = "/images/life.png";
 	    exports.lifeImage.addEventListener('load', function() {
 	    	assetLoaded();
-	    }, false);
+
+
+	    });
+	    
 	};
 
 

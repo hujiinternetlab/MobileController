@@ -4,6 +4,10 @@ body {
   color: #444;
 }
 
+p {
+	font-family: Georgia, FreeSerif, Times, serif;
+}
+
 a {
   color: #AD0042;
   text-decoration: none;
@@ -35,4 +39,20 @@ a.ref:hover {
 .vertical-list li {
 	display: inline-block;
 	margin: 0 10px 0 0;
+}
+#demo {
+	border-spacing: 10px;
+}
+
+#demo td {
+	padding: 0;
+}
+
+#demo #video-cell {
+	padding-left: 60px;
+}
+
+.image-comment {
+	font-size: 12px;
+	font-weight: bold;
 }
